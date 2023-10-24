@@ -1,0 +1,348 @@
+package Project;
+import java.util.*;
+public class TicTacToe_GAME {
+
+			private static int EmptyRow=0,EmptyCol=0,count=1,emptyCount=0;
+			       //Reassigning values in tables
+					public static char[][] Reassign(char[][]arr){
+						for(int i=0,assign=1;i<arr.length;i++) {
+				    		for(int j=0;j<arr.length;j++) {
+				    			arr[i][j]=Integer.toString(assign++).charAt(0);}}
+						return arr;}
+					
+					//method to print the statements.
+						public static void intro(String a) throws InterruptedException{
+						   for(int i=0;i<a.length();i++){
+							   Thread.sleep(10);
+							   System.out.print(a.charAt(i));}}
+						
+					//method to print the box
+						public static void status(char[][]arr) throws InterruptedException{
+							System.out.println("      -------------");
+						    for(int i=0;i<3;i++){ 
+						    	System.out.print("      |");
+						    	for(int j=0;j<3;j++){
+						    		Thread.sleep(10);
+						    	  System.out.print(" "+arr[i][j]+" |");}
+						    	System.out.println("\n      -------------");}}
+				    
+						//method to Continue or Stop the Game
+					    public static int StopOrContinue(String stop) throws InterruptedException{
+					    	Scanner sc=new Scanner(System.in);
+					    	intro(stop);
+					    	ss:while(1>0){
+						    	 String temp=sc.next();
+						    	 if(((temp.charAt(0)>='0'&&temp.charAt(0)<='1'))&&((String.valueOf(temp)).length()<=1)){
+								    	if(temp.charAt(0)=='1'){
+								    		return 1;}
+								    	else if(temp.charAt(0)=='0'||temp.charAt(0)=='R'||temp.charAt(0)=='e'){
+								    		System.out.println(" Thank You..Bye!!");
+								    		System.exit(0);}
+								    	 return -1;}
+						    	 else{System.err.print("\n Invalid input,please enter 0 or 1..!!\n");
+						         continue ss;}}}
+					    
+					    
+					//method to check the count
+				    public static int Count(char[][]arr,int count,String stop,char player,char AI,char key) throws InterruptedException{
+				    	if((count==3 && key==player)||(count==2 && key==AI)){
+				    	   if((count==2 && key==AI)){
+				    		   arr[EmptyRow][EmptyCol]=AI;}
+				    	   status(arr);
+				    	   if(key==player){System.out.println(" You are the winner Bro..!!\n");}
+				    	   if(key==AI){System.out.println(" AI is the winner..Better Luck Next Time!!\n");}
+				    	   int n=StopOrContinue(stop);
+				    	   if(n==1){return 45;}}
+				    	return -1;}
+				    
+				    //method to check the user is winner or not?
+				    public static int CheckingUserInput(char[][]arr,int row,int col,char player,String stop,char AI) throws InterruptedException{
+				    	int count=1,i=0,j=0;
+				    	if((row==0||row==2)&&(col==0||col==2)||(row==1&&col==1)){
+				    	  if(row==col||(row==1&&col==1)){
+				    		  for(count=1,i=row+1;i<arr.length;i++)
+				    			  if(arr[i][i]==player)count++;
+				    		  for(i=row-1;i>=0;i--) 
+				    			  if(arr[i][i]==player)count++;}
+				    	   int num=Count(arr,count,stop,player,AI,player);
+				      	  if(num==45){return num;}
+				      	  
+				    	  if(row!=col||(row==1&&col==1)){
+				    		  for(count=1,i=row+1,j=col-1;i<arr.length;i++,j--)
+				    			  if(arr[i][j]==player) count++;
+				    		  for(i=row-1,j=col+1;j<arr.length;j++,i--) 
+				    			  if(arr[i][j]==player) count++;}}
+				    	int num=Count(arr,count,stop,player,AI,player);
+				    	if(num==45){return num;}
+				    	
+				       //logic to check sides other than corners
+				      //keeping i as stable and moving j forward and backward
+				    	for(count=1,i=row,j=col+1;j<arr.length;j++)//FORWARD
+				    	       if(arr[i][j]==player) count++;
+				    	for(i=row,j=col-1;j>=0;j--)//BACKWARD
+				    		   if(arr[i][j]==player) count++;
+				    	    num=Count(arr,count,stop,player,AI,player);
+				    	      if(num==45){return num;}     
+				      //keeping j as stable and moving i forward and backward
+				    	for(count=1,i=row+1,j=col;i<arr.length;i++)//FORWARD
+				    		  if(arr[i][j]==player)count++;
+				    	for(i=row-1,j=col;i>=0;i--)//BACKWARD
+				    		   if(arr[i][j]==player) count++;
+				    	    num=Count(arr,count,stop,player,AI,player);
+				    	      if(num==45){return num;}
+				    	return -1;}
+
+				    
+		      //method to assign EmptyRow and EmptyColumn
+			  public static void AssignEmptyRowandCol(int i,int j){
+		    	  EmptyRow=i;
+		    	  EmptyCol=j;}
+				   
+			  
+			////Submethod to check AI input
+			public static int SubcheckingAIInput(char[][]arr,int row,int col,char AI,char player) {
+					  if(arr[row][col]==player){
+						  count=1;
+						  return 0;}
+					  if(arr[row][col]==AI)count++;
+					  if(arr[row][col]!=AI && arr[row][col]!=player){
+						  emptyCount++;
+						  AssignEmptyRowandCol(row,col);}
+					  return 1;}
+
+			  
+			//method to check AI input
+			  public static int CheckingAIInput(char[][]arr,int row,int col,char AI,String stop,char player) throws InterruptedException{
+
+		    	int i=0,j=0,num=0,temp=-1;
+		    	if((row==0||row==2)&&(col==0||col==2)||(row==1&&col==1)){
+		    	  if(row==col||(row==1&&col==1)){
+		    		 
+		    		  aa:for(emptyCount=0,count=1,i=row+1;i<arr.length;i++){
+		    			  temp=SubcheckingAIInput(arr,i,i,AI,player);
+		    			  if(temp==0)break aa;}
+		    	    if(count==2 && emptyCount>=1){return  45;}
+		    	     
+		    	     bb:for(emptyCount=0,i=row-1;i>=0;i--){
+		    	    	 temp=SubcheckingAIInput(arr,i,i,AI,player);
+		   			     if(temp==0)break bb;}
+		 	         if(count==2 && emptyCount>=1){return  45;}}
+		    	  
+		    	  if(row!=col||(row==1&&col==1)){
+		    		  cc:for(emptyCount=0,count=1,i=row+1,j=col-1;i<arr.length;i++,j--){ 
+		    			  temp=SubcheckingAIInput(arr,i,j,AI,player);
+		    			  if(temp==0)break cc;}
+		   		  if(count==2 && emptyCount>=1){return  45;}
+
+		    		  dd:for(emptyCount=0,i=row-1,j=col+1;j<arr.length;j++,i--){
+		    			  temp=SubcheckingAIInput(arr,i,j,AI,player);
+		    			  if(temp==0)break dd;}
+		    	    if(count==2 && emptyCount>=1){return  45;}}}
+		    	
+		         //keeping i as stable and moving j forward and backward
+		    	aa:for(emptyCount=0,count=1,i=row,j=col+1;j<arr.length;j++){//FORWARD
+		    		 temp=SubcheckingAIInput(arr,i,j,AI,player);
+					 if(temp==0)break aa;}
+		    	if(count==2 && emptyCount>=1){return  45;}
+		    	 
+		    	bb:for(emptyCount=0,i=row,j=col-1;j>=0;j--){//BACKWARD
+		             temp=SubcheckingAIInput(arr,i,j,AI,player);
+					 if(temp==0)break bb;}
+		         if(count==2 && emptyCount>=1){return  45;}
+		         
+		    	//keeping j as stable and moving i forward and backward
+		    	cc:for(emptyCount=0,count=1,i=row+1,j=col;i<arr.length;i++){//FORWARD
+		            temp=SubcheckingAIInput(arr,i,j,AI,player);
+					if(temp==0)break cc;}
+		   	      if(count==2 && emptyCount>=1){return  45; }
+
+		    	dd:for(emptyCount=0,i=row-1,j=col;i>=0;i--){//BACKWARD
+		    		temp=SubcheckingAIInput(arr,i,j,AI,player);
+					if(temp==0)break dd;}
+				  if(count==2 && emptyCount==1){return  45;}
+		    	 
+				  return -1;
+		    }
+
+		  	//method to checkWheather AI will acquire a chance to win
+		    public static int AISelfCheckToWin(char[][]arr,char AI,String stop,char player) throws InterruptedException{
+		    	int n=0,row=0,col=0;
+		        aa:for(int i=0;i<arr.length;i++){
+					for(int j=0;j<arr.length;j++){
+						if(arr[i][j]==AI){
+							row=i;
+							col=j;
+							n=CheckingAIInput(arr,row,col,AI,stop,player);
+					    	if(n==45){
+					    		Count(arr,2,stop,player,AI,AI);
+					    		return n;}}}}
+		         return -1;}
+		    
+		  //method to place AI randomly
+		    public static char[][] Looping(char[][]arr,char AI,char player){
+		    	aa:for(int i=0;i<arr.length;i++){
+		    		for(int j=0;j<arr.length;j++){
+		    			if(arr[i][j]!=AI && arr[i][j]!=player){
+		    				arr[i][j]=player;
+		    				break aa;}}} 
+		    	return arr;}
+		   
+		    
+		    //method to Assign AI to block the Player 
+		    public static char[][] BlockPlayer(char[][]arr,char player,char AI,String stop) throws InterruptedException{
+		    	int n=0,row=0,col=0;
+		        aa:for(int i=0;i<arr.length;i++){
+					for(int j=0;j<arr.length;j++){
+						 
+						if(arr[i][j]==player){  
+							row=i;
+							col=j;
+							n=CheckingAIInput(arr,row,col,player,stop,AI);
+							if(n==45){
+							arr[EmptyRow][EmptyCol]=AI;
+					    	return arr;}}}}
+		    	
+		    	arr=Looping(arr,player,AI);
+		    	return arr;}
+		    
+		    //method to check wheather match is a DrawMatch
+		   	public static boolean Drawmatch(char[][]arr,char AI,char player,String stop) throws InterruptedException{
+		   		boolean flag2=false;
+		   		aa:for(int p=0;p<arr.length;p++){
+		       		for(int q=0;q<arr.length;q++){
+		       			if(arr[p][q]!=AI && arr[p][q]!=player){
+		       				flag2=true;
+		       			    break aa;}}}
+		   		if(flag2==false){
+		   			    status(arr);
+		   			    System.out.println("\n The match gets draw..!!\n");
+					    int n=StopOrContinue(stop);
+					    if(n==1)return false;}
+		   		return true;	
+		   	}
+		   
+		   	//method to exit
+		   	public static void Exit(){
+		   		System.out.println(" Thank you...Bye..!!");
+		   		System.exit(0);}
+		   	
+			public static void main(String[] args) throws InterruptedException{
+				
+				 Scanner sc=new Scanner(System.in);
+				 int count=-1,mover=0,num=0;
+				 String outline=" The rules for the game of Tic-Tac-Toe are as follows:\n\n" +  
+					 		" 1. This Tic-Tac-Toe game is played on a 3x3 grid.\r\n" + 
+					 		" 2. Two players(user & computer) take turns placing their symbol (\"X\" or \"O\") "
+					 		+ "on empty cells by entering the positional value represented in the cell.\r\n" + 
+					 		" 3. The goal is to get three of your symbols in a row (horizontally, vertically, or diagonally).\r\n" + 
+					 		" 4. The game ends when a player wins or when all cells are occupied.\r\n" + 
+					 		" 5. If no player wins and all cells are filled, the game is a draw\n"+
+					 		" 6. To restart the game in between,press 'R' or 'r'\n"+
+					 		" 7. To exit the game inbetween(while playing),press 'E' or 'e'\n\n";
+			             
+				 String intro=" Welcome to the Tic-Tac-Toe game:)\n\n";
+				 String select="\nWould you like to be as \"X\" then press-> 1 or \"O\" then press-> 0\n";
+				 String start="\nWould you like to make the first move?\nIf \"YES\" -> press 1\nIf \"NO\" -> press 0\n";
+				 String stop="\nTo play the game again press -> 1\nTo Exit the game press -> 0\n";
+				 intro(intro);
+				 intro(outline);
+				 aa:while(1>0){
+				 //displaying intro
+					 intro(select);
+				 
+				 //Getting the identity from the user(X or O) like which they would like to choose and assigning it to them.
+				 String input="";
+				 char player='?',AI='?';
+				 label:while(1>0){
+					 input=sc.next();
+					 if(input.equals("E")||input.equals("e")){Exit();}
+					 if(input.equals("R")||input.equals("r")){continue aa;}
+					 if(((input.charAt(0)>='0' &&input.charAt(0)<='1'))&&((String.valueOf(input)).length()<=1)){
+						 player=(input.charAt(0)=='1')?'X':'O';
+						 AI=(input.charAt(0)=='0')?'X':'O';
+						 break label;}
+					 else {System.err.print("\n Invalid input,please enter 0 or 1..!!\n");
+						 continue label;}}
+				 
+				 //Assigning the AI position if it makes its first move.
+				 char[][]arr= {{'1','2','3'},{'4','5','6'},{'7','8','9'}};
+				 String temp="";
+				 char key='?';
+				 intro(start);
+				 ss:while(1>0){
+					 temp=sc.next();
+					 if(temp.equals("E")||temp.equals("e")){Exit();}
+					 if(temp.equals("R")||temp.equals("r")){continue aa;}
+					 if(((temp.charAt(0)>='0'&&temp.charAt(0)<='1'))&&((String.valueOf(temp)).length()<=1)){
+					    key=temp.charAt(0);
+					    if(key=='0'){
+					    	 Random randomnumber=new Random();
+					    	 char position=Character.forDigit(randomnumber.nextInt(9)+1,10);
+					    	 cc:for(int i=0;i<arr.length;i++){
+					    		for(int j=0;j<arr.length;j++){
+					    			if(arr[i][j]==position){
+					    				arr[i][j]=AI;
+					    				break cc;}}}}
+					    status(arr);
+					    break ss;}
+					    else{System.err.print("\n Invalid input,please enter 0 or 1..!!\n");
+				           continue ss;}}
+				     
+		      //Getting the positional value from the user.
+				 int row=0,col=0;
+				 boolean flag=false,flag2=false;
+				 bb:while(1>0){
+					 System.out.print(" Enter the positional value:");
+					 String inp=sc.next();
+					 if(inp.equals("E")||inp.equals("e")){Exit();}
+					 if(inp.equals("R")||inp.equals("r")){continue aa;}
+					 key=inp.charAt(0);
+					 if((!(key>='1' &&key<='9'))||((String.valueOf(inp)).length()>1))
+					    System.err.print("\n Invalid input,please enter the valid positional no..!!\n\n");
+					 else{
+						   flag=false;
+						   cc:for(int i=0;i<arr.length;i++){
+								for(int j=0;j<arr.length;j++){
+									if(arr[i][j]==key){
+										flag=true;
+										row=i;
+										col=j;
+										arr[i][j]=player;
+									
+										boolean packet=Drawmatch(arr,AI,player,stop);
+										if(packet==false){arr=Reassign(arr);
+										continue aa;}
+										
+										break cc;}}}
+							if(flag==false){System.err.println("\n"+" Position "+key+" is already occupied..!!\n");
+							continue bb;}
+							
+							int check1=0,check2=0;
+							check1=CheckingUserInput(arr,row,col,player,stop,AI);
+						    if(check1!=45){
+							check2=AISelfCheckToWin(arr,AI,stop,player);
+		                    arr=BlockPlayer(arr,player,AI,stop);}
+		                    boolean packet1=true;
+		                        
+						    if(check1!=45 && check2!=45){
+		 				    packet1=Drawmatch(arr,AI,player,stop);
+							if(packet1==false){
+								arr=Reassign(arr);}}
+							
+		                    if(check1!=45 && check2!=45 && packet1!=false)status(arr);
+						    if((check1==45||check2==45)&& packet1!=false){
+						    	 arr=Reassign(arr);
+						    	 continue aa;}
+						    
+		                    if(packet1!=false){
+							boolean packet2=Drawmatch(arr,AI,player,stop);
+							if(packet2==false){arr=Reassign(arr);
+							continue aa;}}
+							
+		   		    }}}
+		        }
+			}
+		         
+	
+
+
